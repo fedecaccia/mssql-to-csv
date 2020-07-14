@@ -7,7 +7,7 @@ Node.js module to export MS SQL database to CSV,
 
 ## Usage
 ```javascript
-    var mssqlExport = require('mssql-to-csv')
+    var mssqlExport = require('mssql-to-csv-query')
 
     // All config options supported by https://www.npmjs.com/package/mssql
     var dbconfig = {
