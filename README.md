@@ -1,9 +1,9 @@
-# mssql-to-csv
-Node.js module to export MS SQL database to CSV
+# mssql-to-csv-query
+Node.js module to export MS SQL database to CSV, 
 
 ## Installation
 
-  npm install mssql-to-csv --save
+  npm install mssql-to-csv-query --save
 
 ## Usage
 ```javascript
@@ -24,11 +24,14 @@ Node.js module to export MS SQL database to CSV
     };
 
     var options = {
-        ignoreList: ["sysdiagrams"], // tables to ignore
-        tables: [],                  // empty to export all the tables
+        ignoreList: [], // tables to ignore
+        tables: [{name:"trades"}], // empty to export all the tables
         outputDirectory: 'somedir',
         log: true,
-        header: false                // true to export column names as csv header
+        header: false, // true to export column names as csv header
+	// queryString is optional, and was added by me after forking the original project mssql-to-csv
+        // by default mssql-to-csv-query run 'select * from <each table in tables>'
+	queryString: 'select * from trades where id>0'
     };
 
     mssqlExport(dbconfig, options).then(function(){
