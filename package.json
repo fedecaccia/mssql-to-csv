@@ -1,6 +1,6 @@
 {
-  "name": "mssql-to-csv",
-  "version": "1.1.0",
+  "name": "mssql-to-csv-query",
+  "version": "1.1.1",
   "description": "Node.js module to export MS SQL database to CSV",
   "main": "index.js",
   "scripts": {
@@ -8,19 +8,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/adnan-kamili/mssql-to-csv.git"
+    "url": "git+https://github.com/fedecaccia/mssql-to-csv.git"
   },
   "keywords": [
     "mssql",
     "csv",
     "export"
   ],
-  "author": "Adnan Kamili <adnan.kamili@gmail.com> (https://github.com/adnan-kamili)",
+  "author": "Adnan Kamili <adnan.kamili@gmail.com> (https://github.com/adnan-kamili) & Federico Caccia <federicoagustincaccia@gmail.com> (https://github.com/fedecaccia)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/adnan-kamili/mssql-to-csv/issues"
+    "url": "https://github.com/fedecaccia/mssql-to-csv/issues"
   },
-  "homepage": "https://github.com/adnan-kamili/mssql-to-csv#readme",
+  "homepage": "https://github.com/fedecaccia/mssql-to-csv#readme",
   "dependencies": {
     "fast-csv": "^1.0.0",
     "mssql": "^3.0.1"
