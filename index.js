@@ -4,8 +4,9 @@ var sql = require('mssql');
 
 
 module.exports = function (dbconfig, options) {
-    options = util.updateOptions(options);
+
     try {
+        options = util.updateOptions(options);
         if (fs.existsSync(options.outputDirectory) == false) {
             fs.mkdirSync(options.outputDirectory);
         }
@@ -14,28 +15,24 @@ module.exports = function (dbconfig, options) {
         return Promise.reject(err);
     }
     options.log && console.log("Connecting to the database:", dbconfig.database, "...");
-    return sql.connect(dbconfig).then(function () {
-        if (options.tables.length == 0) {
-            options.log && console.log("Fetching list of tables from DB", "...");
-            return util.getTableList(options.tables, options.ignoreList);
-        }
-    })
+    return sql.connect(dbconfig)
+    .then(function () {
+        options.log && console.log("Starting DB export from", dbconfig.database, "...");       
+        
+        var exportPromise = options.tables.map(function (table) {
+            return util.exportQuery(options.queryString, options.fileName, options.outputDirectory).then(function () {
+                options.log && console.log(table.name + " CSV file exported!");
+            });
+        });
+        return Promise.all(exportPromise)
         .then(function () {
-            options.log && console.log("Starting DB export from", dbconfig.database, "...");
-            var exportPromise = options.tables.map(function (table) {
-                let queryString = options.queryString || 'select * from ' + table.name;
-                return util.exportTable(table.name, options.outputDirectory, queryString).then(function () {
-                    options.log && console.log(table.name + " CSV file exported!");
-                });
-            });
-            return Promise.all(exportPromise).then(function () {
-                options.log && console.log("All tables have been exported to:", options.outputDirectory);
-                sql.close();
-            });
-        })
-        .catch(function (err) {
+            options.log && console.log("Query exported to:", options.outputDirectory);
             sql.close();
-            throw (err);
         });
 
+    })
+    .catch(function (err) {
+        sql.close();
+        throw (err);
+    });
 }
