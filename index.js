@@ -6,39 +6,43 @@ const { resolve } = require("path");
 
 module.exports = function (dbconfig, options) {
 
-    try {
-        options = util.updateOptions(options);
-        if (fs.existsSync(options.outputDirectory) == false) {
-            fs.mkdirSync(options.outputDirectory);
-        }
-    }
-    catch (err) {
-        return Promise.reject(err);
-    }
+    return new Promise((resolve, reject) => {
 
-    options.log && console.log("Connecting to the database:", dbconfig.database, "...");
+        try {
+            options = util.updateOptions(options);
+            if (fs.existsSync(options.outputDirectory) == false) {
+                fs.mkdirSync(options.outputDirectory);
+            }
+        }
+        catch (err) {
+            return reject(err);
+        }
     
-    sql.connect(dbconfig)
-    .then(function () {
+        options.log && console.log("Connecting to the database:", dbconfig.database, "...");
         
-        util.exportQuery(options.queryString, options.fileName, options.outputDirectory)        
+        sql.connect(dbconfig)
         .then(function () {
-            options.log && console.log("Query exported to:", options.outputDirectory);
-            sql.close()
-            .then((res) => {
-                resolve();
+            
+            util.exportQuery(options.queryString, options.fileName, options.outputDirectory)        
+            .then(function () {
+    
+                options.log && console.log("Query exported to:", options.outputDirectory);
+                sql.close()
+                .then((res) => {
+                    return resolve(res);
+                })
+                .catch(function (err) {                
+                    return reject(err);
+                });
             })
-            .catch(function (err) {                
-                throw (err);
+            .catch(function (err) {
+                sql.close();
+                return reject(err);
             });
         })
         .catch(function (err) {
             sql.close();
-            throw (err);
+            return reject(err);
         });
-    })
-    .catch(function (err) {
-        sql.close();
-        throw (err);
-    });
+    });    
 }
